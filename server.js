@@ -8,15 +8,15 @@ const http = require( 'http' ),
       port = 3000
 
 const appdata = [
-  { 'model': 'toyota', 'year': 1999, 'mpg': 23 },
-  { 'model': 'honda', 'year': 2004, 'mpg': 30 },
-  { 'model': 'ford', 'year': 1987, 'mpg': 14} 
+  { 'name': 'William T Anderson', 'mother': 'Ellen Anderson', 'father': 'James W Anderson', 'b_year': 1892 },
+  { 'name': 'Russell H Anderson', 'mother': 'Rose Anderson', 'father': 'William T Anderson', 'b_year': 1918 },
+  { 'name': 'William J Anderson', 'mother': 'Rose Anderson', 'father': 'William T Anderson', 'b_year': 1915 } 
 ]
 
 const server = http.createServer( function( request,response ) {
   if( request.method === 'GET' ) {
     handleGet( request, response )    
-  }else if( request.method === 'POST' ){
+  }else if( request.method === 'POST' && request.url === '/data'){
     handlePost( request, response ) 
   }
 })
@@ -26,8 +26,23 @@ const handleGet = function( request, response ) {
 
   if( request.url === '/' ) {
     sendFile( response, 'public/index.html' )
-  }else{
+
+  } 
+  else if (request.method === 'GET' && request.url === '/app'){
+  sendFile(response, 'public/app.html')
+
+  }
+  else if (request.method === 'GET' && request.url === '/data') {
+    response.writeHead(200, {
+      'Content-Type': 'application/json'
+    })
+    
+    response.end(JSON.stringify(appdata))
+
+  }
+  else{
     sendFile( response, filename )
+
   }
 }
 
@@ -39,13 +54,15 @@ const handlePost = function( request, response ) {
   })
 
   request.on( 'end', function() {
-    console.log( JSON.parse( dataString ) )
-    // ... do something with the data here!!!
+    const newMem = JSON.parse(dataString)
 
-    response.writeHead( 200, "OK", {'Content-Type': 'text/plain' })
+    console.log(newMem)
+    appdata.push(newMem)
+
+    response.writeHead( 201, 'New Member Added', {'Content-Type': 'application/json' })
 
     // change this to incorporate data
-    response.end('test')
+    response.end(JSON.stringify(newMem))
   })
 }
 

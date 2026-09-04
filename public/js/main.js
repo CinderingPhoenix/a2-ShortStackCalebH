@@ -19,6 +19,9 @@ const submit = async function( event ) {
   const text = await response.text()
 
   console.log( 'text:', text )
+
+  sessionStorage.setItem('yourname', input.value)
+  window.location.href = '/app'
 }
 
 window.onload = function() {

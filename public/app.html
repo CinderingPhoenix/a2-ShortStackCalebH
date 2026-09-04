@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang = 'en'>
+    <Head>
+        <title>
+            Family Tree Tracker
+        </title>
+        <meta charset = 'utf-8'/>
+        <link rel = 'stylesheet' href = 'css/main.css' />
+    </Head>
+
+    <Body>
+        <h1 id = 'welcome'></h1>
+
+        <h2> Family List </h2>
+        <button id = 'v_but'> View </button>
+        <ul id = 'Fam_list'></ul>
+
+        <h2></h2>
+        <form id = 'a_but_form'>
+            <input type = 'text' id = 'name' placeholder = 'Name' required>
+            <input type = 'text' id = 'mother' placeholder = 'Mother Name' required>
+            <input type = 'text' id = 'father' placeholder = 'Father Name' required>
+            <input type = 'number' id = 'b_year' placeholder = 'Birth Year' required>
+            <button type = 'submit'> Add member </button>
+        </form>
+
+
+        <p>
+            Here
+        </p>
+
+        <script>
+            const yourname = sessionStorage.getItem('yourname')
+
+            if (yourname === "") {
+                window.location.href = '/'
+            }
+            else {
+                document.querySelector('#welcome').textContent = `Welcome, ${yourname}`
+            }
+
+            const viewButton = document.querySelector('#view-button')
+            const Famlist = document.querySelector('#Fam_list')
+
+            const viewFam = async function() {
+                const response = await fetch('/data')
+                const appdata = await response.json()
+
+                Famlist.innerHTML = ''
+
+                for (const member of appdata) {
+                    const person = document.createElement('li')
+
+                    person.textContent = `${member.name} - ${member.mother} and ${member.father} - 'born: ' ${member.b_year}`
+
+                    Famlist.appendChild(person)
+                }
+            }
+
+            viewButton.onclick = viewFam
+        </script>
+    </Body>
+</html>
